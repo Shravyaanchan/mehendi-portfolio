@@ -43,47 +43,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("contact-form");
 
     if (form) {
-        form.action = "https://formsubmit.co/hennabynishitha1@gmail.com";
+        // Ensure the form action matches the intended email.
+        // It's already correct in HTML, but we leave it to the HTML attributes.
 
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
+        form.addEventListener("submit", (e) => {
+            // We do NOT preventDefault() so the form submits natively.
+            // This avoids CORS issues and allows FormSubmit to handle redirection/activation.
 
             const submitBtn = form.querySelector("button[type='submit']");
             const originalText = submitBtn.textContent;
 
             submitBtn.textContent = "Sending...";
-            submitBtn.disabled = true;
 
-            // Honeypot safety
-            const honeyPot = form.querySelector("input[name='_honey']");
-            if (honeyPot) honeyPot.value = "";
-
-            const formData = new FormData(form);
-
-            try {
-                const response = await fetch(form.action, {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        "Accept": "application/json"
-                    }
-                });
-
-                if (response.ok) {
-                    form.reset();
-                    window.location.href = "thanks.html";
-                } else {
-                    const data = await response.json();
-                    alert(data.message || "Something went wrong. Please try again.");
-                }
-
-            } catch (error) {
-                console.error("Form submission error:", error);
-                alert("Network error. Please check your internet connection.");
-            } finally {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }
+            // Optional: visual feedback only, don't disable to ensure submission goes through
+            submitBtn.style.opacity = "0.7";
         });
     } else {
         console.error("Contact form not found!");
