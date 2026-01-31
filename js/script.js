@@ -43,20 +43,48 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("contact-form");
 
     if (form) {
-        // Ensure the form action matches the intended email.
-        // It's already correct in HTML, but we leave it to the HTML attributes.
-
-        form.addEventListener("submit", (e) => {
-            // We do NOT preventDefault() so the form submits natively.
-            // This avoids CORS issues and allows FormSubmit to handle redirection/activation.
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
             const submitBtn = form.querySelector("button[type='submit']");
             const originalText = submitBtn.textContent;
 
             submitBtn.textContent = "Sending...";
+            submitBtn.disabled = true;
 
-            // Optional: visual feedback only, don't disable to ensure submission goes through
-            submitBtn.style.opacity = "0.7";
+            // Honeypot safety
+            const honeyPot = form.querySelector("input[name='_honey']");
+            if (honeyPot) honeyPot.value = "";
+
+            const formData = new FormData(form);
+
+            // Use the correct AJAX endpoint to avoid CORS issues and get JSON response
+            const action = "https://formsubmit.co/ajax/hennabynishitha@gmail.com";
+
+            try {
+                const response = await fetch(action, {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (response.ok) {
+                    form.reset();
+                    window.location.href = "thanks.html";
+                } else {
+                    const data = await response.json();
+                    alert(data.message || "Something went wrong. Please try again.");
+                }
+
+            } catch (error) {
+                console.error("Form submission error:", error);
+                alert("Network error. Please check your internet connection.");
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
     } else {
         console.error("Contact form not found!");
