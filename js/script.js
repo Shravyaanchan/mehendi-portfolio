@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const formData = new FormData(form);
 
             // Use the correct AJAX endpoint to avoid CORS issues and get JSON response
-            const action = "https://formsubmit.co/ajax/hennabynishitha@gmail.com";
+            const action = "https://formsubmit.co/ajax/hennabynishitha1@gmail.com";
 
             try {
                 const response = await fetch(action, {
